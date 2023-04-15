@@ -93,8 +93,8 @@ public class Login extends JFrame {
 			}			
 			@Override
 			public void mouseExited(MouseEvent e) {
-				 btnexit.setBackground(new Color(12, 138, 199));
-			     labelExit.setForeground(Color.white);
+				btnexit.setBackground(new Color(12, 138, 199));
+				labelExit.setForeground(Color.white);
 			}
 		});
 		btnexit.setBackground(new Color(12, 138, 199));

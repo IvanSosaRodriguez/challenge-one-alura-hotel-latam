@@ -6,6 +6,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import Conexion.RegistrosController;
+
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -16,6 +18,7 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.Map;
 import java.awt.event.ActionEvent;
 import javax.swing.JTabbedPane;
 import java.awt.Toolkit;
@@ -25,6 +28,8 @@ import javax.swing.ListSelectionModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.lang.invoke.VarHandle;
+import java.sql.SQLException;
 
 @SuppressWarnings("serial")
 public class Busqueda extends JFrame {
@@ -37,8 +42,13 @@ public class Busqueda extends JFrame {
 	private DefaultTableModel modeloHuesped;
 	private JLabel labelAtras;
 	private JLabel labelExit;
+	private RegistrosController controler;
 	int xMouse, yMouse;
-
+	
+	
+	
+	
+	
 	/**
 	 * Launch the application.
 	 */
@@ -59,6 +69,9 @@ public class Busqueda extends JFrame {
 	 * Create the frame.
 	 */
 	public Busqueda() {
+		
+		this.controler = new RegistrosController();
+		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Busqueda.class.getResource("/imagenes/lupa2.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 910, 571);
@@ -80,7 +93,7 @@ public class Busqueda extends JFrame {
 		JLabel lblNewLabel_4 = new JLabel("SISTEMA DE BÚSQUEDA");
 		lblNewLabel_4.setForeground(new Color(12, 138, 199));
 		lblNewLabel_4.setFont(new Font("Roboto Black", Font.BOLD, 24));
-		lblNewLabel_4.setBounds(331, 62, 280, 42);
+		lblNewLabel_4.setBounds(331, 62, 300, 42);
 		contentPane.add(lblNewLabel_4);
 		
 		JTabbedPane panel = new JTabbedPane(JTabbedPane.TOP);
@@ -120,6 +133,8 @@ public class Busqueda extends JFrame {
 		JScrollPane scroll_tableHuespedes = new JScrollPane(tbHuespedes);
 		panel.addTab("Huéspedes", new ImageIcon(Busqueda.class.getResource("/imagenes/pessoas.png")), scroll_tableHuespedes, null);
 		scroll_tableHuespedes.setVisible(true);
+		
+		cargartabla();
 		
 		JLabel lblNewLabel_2 = new JLabel("");
 		lblNewLabel_2.setIcon(new ImageIcon(Busqueda.class.getResource("/imagenes/Ha-100px.png")));
@@ -273,4 +288,41 @@ public class Busqueda extends JFrame {
 	        int y = evt.getYOnScreen();
 	        this.setLocation(x - xMouse, y - yMouse);
 }
+	
+	    public void cargartabla() {
+	    	
+	    	try {
+	    		List<Map<String, String>> registrosHuespedes = this.controler.CargarHuespedes();
+	    		List<Map<String, String>> registrosReservas = this.controler.CargarReservas();
+				
+				try {
+					
+					registrosHuespedes.forEach(registro -> modeloHuesped.addRow(
+        				new Object[] {
+        				registro.get("ID"),
+        				registro.get("NOMBRE"),
+        				registro.get("APELLIDO"),
+        				registro.get("FECHADENACIMIENTO"),
+        				registro.get("NACIONALIDAD"),
+        				registro.get("TELEFONO"),
+        				registro.get("ID_RESERVA")}));
+					
+
+					registrosReservas.forEach(registro -> modelo.addRow(
+        				new Object[] {
+        				registro.get("ID"),
+        				registro.get("FECHAENTRADA"),
+        				registro.get("FECHASALIDA"),
+        				registro.get("VALOR"),
+        				registro.get("FORMADEPAGO")}));
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			} catch (SQLException e) {
+				
+				e.printStackTrace();
+			}
+		}
 }

@@ -167,8 +167,8 @@ public class MenuUsuario extends JFrame {
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				 btnexit.setBackground(Color.white);
-			     labelExit.setForeground(Color.black);
+				btnexit.setBackground(Color.white);
+				labelExit.setForeground(Color.black);
 			}
 		});
 		
