@@ -285,7 +285,6 @@ public class RegistroHuesped extends JFrame {
 		
 		JPanel btnexit = new JPanel();
 		btnexit.setBounds(857, 0, 53, 36);
-		contentPane.add(btnexit);
 		btnexit.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -309,10 +308,11 @@ public class RegistroHuesped extends JFrame {
 		
 		labelExit = new JLabel("X");
 		labelExit.setBounds(0, 0, 53, 36);
-		btnexit.add(labelExit);
 		labelExit.setHorizontalAlignment(SwingConstants.CENTER);
 		labelExit.setForeground(SystemColor.black);
 		labelExit.setFont(new Font("Roboto", Font.PLAIN, 18));
+		btnexit.add(labelExit);
+		header.add(btnexit);
 	}
 	
 	

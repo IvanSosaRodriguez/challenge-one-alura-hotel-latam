@@ -28,7 +28,6 @@ import javax.swing.ListSelectionModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.lang.invoke.VarHandle;
 import java.sql.SQLException;
 
 @SuppressWarnings("serial")
@@ -146,7 +145,7 @@ public class Busqueda extends JFrame {
 			@Override
 			public void mouseDragged(MouseEvent e) {
 				headerMouseDragged(e);
-			     
+				
 			}
 		});
 		header.addMouseListener(new MouseAdapter() {
@@ -175,8 +174,8 @@ public class Busqueda extends JFrame {
 			}			
 			@Override
 			public void mouseExited(MouseEvent e) {
-				 btnAtras.setBackground(Color.white);
-			     labelAtras.setForeground(Color.black);
+				btnAtras.setBackground(Color.white);
+			    labelAtras.setForeground(Color.black);
 			}
 		});
 		btnAtras.setLayout(null);
@@ -205,8 +204,8 @@ public class Busqueda extends JFrame {
 			}			
 			@Override
 			public void mouseExited(MouseEvent e) { //Al usuario quitar el mouse por el botón este volverá al estado original
-				 btnexit.setBackground(Color.white);
-			     labelExit.setForeground(Color.black);
+				btnexit.setBackground(Color.white);
+			    labelExit.setForeground(Color.black);
 			}
 		});
 		btnexit.setLayout(null);

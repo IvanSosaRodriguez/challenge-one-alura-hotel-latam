@@ -12,6 +12,9 @@ import javax.swing.ImageIcon;
 import java.awt.Color;
 import javax.swing.JTextField;
 import com.toedter.calendar.JDateChooser;
+
+import Conexion.RegistrosController;
+
 import java.awt.Font;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
@@ -20,12 +23,16 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.Toolkit;
 import java.beans.PropertyChangeListener;
+import java.security.KeyStore.Entry;
 import java.beans.PropertyChangeEvent;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @SuppressWarnings("serial")
@@ -39,6 +46,7 @@ public class ReservasView extends JFrame {
 	int xMouse, yMouse;
 	private JLabel labelExit;
 	private JLabel labelAtras;
+	private RegistrosController controller;
 
 	/**
 	 * Launch the application.
@@ -60,6 +68,8 @@ public class ReservasView extends JFrame {
 	 * Create the frame.
 	 */
 	public ReservasView() {
+		
+		
 		super("Reserva");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(ReservasView.class.getResource("/imagenes/aH-40px.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -73,8 +83,6 @@ public class ReservasView extends JFrame {
 		setResizable(false);
 		setLocationRelativeTo(null);
 		setUndecorated(true);
-		
-
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(null);
@@ -305,7 +313,17 @@ public class ReservasView extends JFrame {
 		btnsiguiente.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (ReservasView.txtFechaEntrada.getDate() != null && ReservasView.txtFechaSalida.getDate() != null) {		
+				if (ReservasView.txtFechaEntrada.getDate() != null && ReservasView.txtFechaSalida.getDate() != null) {
+					
+					controller = new RegistrosController();
+					try {
+						
+						controller.GuardarReservas(guardarDatos());
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+					e1.printStackTrace();
+					}
+					
 					RegistroHuesped registro = new RegistroHuesped();
 					registro.setVisible(true);
 				} else {
@@ -316,6 +334,7 @@ public class ReservasView extends JFrame {
 		btnsiguiente.setLayout(null);
 		btnsiguiente.setBackground(SystemColor.textHighlight);
 		btnsiguiente.setBounds(238, 493, 122, 35);
+		btnsiguiente.add(lblSiguiente);
 		panel.add(btnsiguiente);
 		btnsiguiente.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
@@ -323,32 +342,39 @@ public class ReservasView extends JFrame {
 	}
 		
 	//Código que permite mover la ventana por la pantalla según la posición de "x" y "y"	
-	 private void headerMousePressed(java.awt.event.MouseEvent evt) {
-	        xMouse = evt.getX();
-	        yMouse = evt.getY();
-	    }
+	private void headerMousePressed(java.awt.event.MouseEvent evt) {
+		xMouse = evt.getX();
+		yMouse = evt.getY();
+	}
 
-	    private void headerMouseDragged(java.awt.event.MouseEvent evt) {
-	        int x = evt.getXOnScreen();
-	        int y = evt.getYOnScreen();
-	        this.setLocation(x - xMouse, y - yMouse);
-	    }
-	    
+	private void headerMouseDragged(java.awt.event.MouseEvent evt) {
+		int x = evt.getXOnScreen();
+		int y = evt.getYOnScreen();
+		this.setLocation(x - xMouse, y - yMouse);
+	}
+	
 	    //implementaciones hechas por mi
-	    
-	    float monedaLocal = 24;
-	    
-	    public void CalculoDias(){
-	    	
-	    	long fechaEnt = txtFechaEntrada.getDate().getTime();
-	    	long fechaSal = txtFechaSalida.getDate().getTime();
-	    	Long diferencia = fechaEnt-fechaSal;
-	    	double diasResul = Math.floor(-1*(diferencia / (1000 * 60 * 60 * 24)));
-	    	txtValor.setText(String.valueOf( diasResul * monedaLocal));
-	    	
-	    }
-	    
-	    //Date fechaEnt = new Date(txtFechaEntrada.getDate().getTime());
-    	//Date fechaSal = new Date(txtFechaSalida.getDate().getTime());
-	    
+
+	float monedaLocal = 24;
+
+	public void CalculoDias(){
+
+		long fechaEnt = txtFechaEntrada.getDate().getTime();
+		long fechaSal = txtFechaSalida.getDate().getTime();
+		Long diferencia = fechaEnt-fechaSal;
+	    double diasResul = Math.floor(-1*(diferencia / (1000 * 60 * 60 * 24)));
+	    txtValor.setText(String.valueOf( diasResul * monedaLocal));
+	}
+
+	public Map<String, String> guardarDatos(){
+
+		Map<String, String> datos = new HashMap<>();
+		datos.put("FECHAENTRADA", String.valueOf(new Date( txtFechaEntrada.getDate().getTime())));
+		datos.put("FECHASALIDA", String.valueOf(new Date(txtFechaSalida.getDate().getTime())));
+		datos.put("VALOR",txtValor.getText());
+		datos.put("FORMADEPAGO",txtFormaPago.getSelectedItem().toString());
+
+		return datos;
+	}
+
 }
