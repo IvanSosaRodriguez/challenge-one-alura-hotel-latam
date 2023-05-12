@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import views.ReservasView;
+
 public class RegistrosController {
 	
 	public RegistrosController() {
@@ -77,11 +79,11 @@ public class RegistrosController {
         return resultado;
     }
     
-    public void GuardarReservas(Map<String,String> datos) throws SQLException {
+    public int GuardarReservas(Map<String,String> datos) throws SQLException {
+    	
+    	int registro = 00;
     
         Connection con = new FactoryConnetion().abreConnection();
-        
-        System.out.println("conexion abierta");
         
         PreparedStatement statement = con.prepareStatement("INSERT INTO reservas"
             + "(FechaEntrada,FechaSalida,Valor,MetodoPago)"
@@ -97,10 +99,37 @@ public class RegistrosController {
         ResultSet resultSet = statement.getGeneratedKeys();
         
         while(resultSet.next()) {
-            System.out.println(String.format("fue insertado el registro id: %d",resultSet.getInt(1)));
-        
+            System.out.println(String.format("fue insertado el registro resevas id: %d",resultSet.getInt(1)));
+            registro = resultSet.getInt(1);
         }
         
-        con.close();
+       return registro;
     }
+    
+    public void GuardarHuespedes(Map<String, String> datos, int reserva) throws SQLException {
+ 
+    	
+		Connection con = new FactoryConnetion().abreConnection();
+		
+		PreparedStatement statement = con.prepareStatement("INSERT INTO Huespedes "
+				+ "(Nombre,Apellido,Fechadenacimiento,Nacionalidad,Telefono,ID_reserva)"
+				+ "VALUES (?,?,?,?,?,?)",Statement.RETURN_GENERATED_KEYS);
+		
+		statement.setString(1, datos.get("NOMBRE"));
+		statement.setString(2, datos.get("APELLIDO"));
+		statement.setDate(3, Date.valueOf(datos.get("FECHADENACIMIENTO")));
+		statement.setString(4, datos.get("NACIONALIDAD"));
+		statement.setDouble(5, Float.valueOf(datos.get("TELEFONO")));
+		statement.setInt(6,reserva );
+		
+		statement.execute();
+		
+		ResultSet resultSet = statement.getGeneratedKeys();
+        
+        while(resultSet.next()) {
+            System.out.println(String.format("fue insertado el registro Huespedes id: %d",resultSet.getInt(1)));
+        }
+        
+        
+	}
 }
